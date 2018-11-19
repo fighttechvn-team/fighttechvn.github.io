@@ -160,20 +160,20 @@
 .work {
   background: #ea8025; }
   .work .title {
-    color: #207b20; }
+    color: white; }
     .work .title h3 {
-      color: #207b20; }
+      color: white; }
     .work .title .line {
-      background-color: #207b20; }
+      background-color: #ea8025; }
   .work .menu {
     list-style: none;
     text-align: center; }
     .work .menu li {
       display: inline-block;
       background: white;
-      border: 2px solid #207b20;
+      border: 2px solid white;
       padding: 10px 20px;
-      color: #207b20;
+      color: #ea8025;
       cursor: pointer; }
       .work .menu li:first-child {
         border-radius: 50px 0px 0px 50px;
@@ -190,7 +190,7 @@
         -ms-border-radius: 0px 50px 50px 0px;
         -o-border-radius: 0px 50px 50px 0px; }
       .work .menu li.mixitup-control-active {
-        background: #207b20;
+        background: #ea8025;
         color: white; }
   .work .content_mixitup {
     display: grid;
