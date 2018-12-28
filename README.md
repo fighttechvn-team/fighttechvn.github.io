@@ -1,1 +1,2 @@
 # fighttechvn.github.io
+new
