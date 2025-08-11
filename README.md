@@ -1,3 +1,5 @@
 # fighttechvn.github.io
-new
-new
+Cookies: 
+- https://fighttechvnteam.github.io/fighttechvnteam/cookies.html
+Device infor: 
+- https://fighttechvnteam.github.io/fighttechvnteam/device.html
