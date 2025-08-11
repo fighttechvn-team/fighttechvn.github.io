@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Device Fingerprint Info</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    h1 { font-size: 20px; }
+    pre { background: #f4f4f4; padding: 10px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Device Fingerprint Information</h1>
+  <pre id="info">Loading...</pre>
+
+  <script>
+    async function getCanvasHash() {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.textBaseline = 'top';
+      ctx.font = '16px Arial';
+      ctx.fillText('fingerprint-test', 2, 2);
+      return sha256(canvas.toDataURL());
+    }
+
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function getGPUInfo() {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (!gl) return { vendor: null, renderer: null };
+      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+      return {
+        vendor: debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : null,
+        renderer: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : null
+      };
+    }
+
+    async function getPublicIP() {
+      try {
+        const res = await fetch('https://api64.ipify.org?format=json');
+        const data = await res.json();
+        return data.ip;
+      } catch {
+        return null;
+      }
+    }
+
+    async function getLocalIP() {
+      return new Promise((resolve) => {
+        const pc = new RTCPeerConnection({iceServers:[]});
+        pc.createDataChannel('');
+        pc.createOffer().then(offer => pc.setLocalDescription(offer));
+        pc.onicecandidate = (event) => {
+          if (!event || !event.candidate) return;
+          const parts = event.candidate.candidate.split(' ');
+          const ip = parts[4];
+          if (ip && !ip.startsWith('0.0.0.0')) {
+            resolve(ip);
+            pc.close();
+          }
+        };
+        setTimeout(() => resolve(null), 2000); // timeout nếu không lấy được
+      });
+    }
+
+    async function collectInfo() {
+      const ua = navigator.userAgent;
+      const platform = navigator.platform;
+      const language = navigator.language;
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const screenInfo = {
+        width: window.screen.width,
+        height: window.screen.height,
+        pixelRatio: window.devicePixelRatio
+      };
+      const gpu = await getGPUInfo();
+      const canvasHash = await getCanvasHash();
+      const publicIP = await getPublicIP();
+      const localIP = await getLocalIP();
+
+      const data = {
+        ua,
+        platform,
+        language,
+        timezone,
+        screen: screenInfo,
+        gpu,
+        canvasHash,
+        ip: {
+          public: publicIP,
+          local: localIP
+        }
+      };
+      data.fingerprint = await sha256(JSON.stringify(data));
+      return data;
+    }
+
+    collectInfo().then(data => {
+      document.getElementById('info').textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
+</html>
