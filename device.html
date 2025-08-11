@@ -7,14 +7,22 @@
   <style>
     body { font-family: sans-serif; padding: 20px; }
     h1 { font-size: 20px; }
-    pre { background: #f4f4f4; padding: 10px; border-radius: 8px; }
+    pre { background: #f4f4f4; padding: 10px; border-radius: 8px; white-space: pre-wrap; word-wrap: break-word; }
+    .section { margin-bottom: 20px; }
   </style>
 </head>
 <body>
-  <h1>Device Fingerprint Information</h1>
-  <pre id="info">Loading...</pre>
+  <div class="section">
+    <h1>📋 Device Fingerprint Information</h1>
+    <pre id="info">Loading...</pre>
+  </div>
 
-  <script>
+  <div class="section">
+    <h1>🛠 Code used to collect information</h1>
+    <pre id="code"></pre>
+  </div>
+
+  <script id="fingerprint-script">
     async function getCanvasHash() {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -64,7 +72,7 @@
             pc.close();
           }
         };
-        setTimeout(() => resolve(null), 2000); // timeout nếu không lấy được
+        setTimeout(() => resolve(null), 2000);
       });
     }
 
@@ -103,6 +111,10 @@
     collectInfo().then(data => {
       document.getElementById('info').textContent = JSON.stringify(data, null, 2);
     });
+
+    // Hiển thị code JS đang chạy
+    const scriptContent = document.getElementById('fingerprint-script').textContent;
+    document.getElementById('code').textContent = scriptContent.trim();
   </script>
 </body>
 </html>
