@@ -1,3 +1,6 @@
 # fighttechvn.github.io
-- Cookies:https://fighttechvnteam.github.io/fighttechvnteam/cookies.html
+
+- https://fighttechvnteam.github.io/fighttechvnteam/
+
+- Cookies: https://fighttechvnteam.github.io/fighttechvnteam/cookies.html
 - Device infor: https://fighttechvnteam.github.io/fighttechvnteam/device.html
